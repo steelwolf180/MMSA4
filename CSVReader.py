@@ -1,5 +1,5 @@
 __author__ = 'max'
-import csv  # imports the csv module
+import csv  #imports the csv module
 from collections import defaultdict #special dict that returns default values whenever a key is selected from the dict
 
 # open csv file
@@ -30,7 +30,6 @@ def read_CSV():
             tag_list.append(val[0])
 
 def gen_matrix():
-    count = 0
     #create matrix with tags
     for x in sorted(tag_list):
         for y in sorted(tag_list):
@@ -40,6 +39,16 @@ def gen_matrix():
     for i in sorted(tag_list):
         for j in sorted(tag_list):
             matrix_dic[(i),(j)]
+
+def tag_relationships():
+    count = 0
+    #displays all the tag id that a photo is tagged based on tag word/number
+    for image, tag in sorted(temp_list): #converts list into a dictionary to include image with their own tags
+        by_words[tag].append(image)
+
+    #displays all tag words/number that a photo is tagged based on photo id
+    for image, tag in sorted(temp_list):#converts list into a dictionary to include image with their own tags
+        by_imageid[image].append(tag)
 
     #update matrix table with co-occurrence  for each individual keywords
     for i in sorted(tag_list):
@@ -55,27 +64,15 @@ def gen_matrix():
                     matrix_dic[(i),(j)] = count
                 else:
                     count = 0
+    temp_list.clear()
 
     #print matrix table with each key for the coordinates
     for k,v in sorted(matrix_dic.items()):
         print("keys:",k,"values:",v)
 
-def tag_relationships():
-
-    #displays all the tag id that a photo is tagged based on tag word/number
-    for image, tag in sorted(temp_list): #converts list into a dictionary to include image with their own tags
-        by_words[tag].append(image)
-
-    #displays all tag words/number that a photo is tagged based on photo id
-    for image, tag in sorted(temp_list):#converts list into a dictionary to include image with their own tags
-        by_imageid[image].append(tag)
-
-    temp_list.clear()
-
 def start():#calls all the other function in the program
     read_CSV()
-    tag_relationships()
     gen_matrix()
-
+    tag_relationships()
 
 start() #start of the python program

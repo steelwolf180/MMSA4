@@ -88,4 +88,5 @@ def writedicttoCSV(csv_file,csv_columns,dict_data):
 def prep_data_csv():
     csv_col = tag_list.sort()
     print(csv_col)
+
 start() #start of the python program

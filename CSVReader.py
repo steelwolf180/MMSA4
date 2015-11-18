@@ -10,12 +10,15 @@ photos_tag = open('photos_tags.csv', "rt", encoding="utf-8")
 #declareation
 by_words = defaultdict(list) #create dict based upon tag word from photos tag table
 by_imageid = defaultdict(list) #create dict based upon photo id from photos tag table
-
 temp_list = [] #tempoary list
 tag_list =[] #to store list of tags
 matrix_tuple = []  #blank matrix list with tuple
 matrix_dic =  defaultdict(int) #blank matrix dictionary to add values
-temp_dic = defaultdict(int)
+
+def start():#calls all the other function in the program
+    read_CSV()
+    gen_matrix()
+    tag_relationships()
 
 def read_CSV():
     #Reads from CSV file and add to a list
@@ -55,8 +58,7 @@ def tag_relationships():
         for j in sorted(tag_list):
             for id in by_imageid:
                 if j == i:
-                    temp_dic[(i),(j)] = 0
-                    matrix_dic.update(temp_dic)
+                    matrix_dic[(i),(j)] = 0
                     break
                 elif j in by_imageid[id] and i in by_imageid[id]:
                     count=matrix_dic[(i),(j)]
@@ -65,14 +67,25 @@ def tag_relationships():
                 else:
                     count = 0
     temp_list.clear()
-
+'''
     #print matrix table with each key for the coordinates
     for k,v in sorted(matrix_dic.items()):
         print("keys:",k,"values:",v)
 
-def start():#calls all the other function in the program
-    read_CSV()
-    gen_matrix()
-    tag_relationships()
 
+def writedicttoCSV(csv_file,csv_columns,dict_data):
+    try:
+        with open(csv_file, 'w') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
+            writer.writeheader()
+            for data in dict_data:
+                writer.writerow(data)
+    except IOError as (errno, strerror):
+            print("I/O error({0}): {1}".format(errno, strerror))
+    return
+'''
+
+def prep_data_csv():
+    csv_col = tag_list.sort()
+    print(csv_col)
 start() #start of the python program

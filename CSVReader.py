@@ -1,5 +1,6 @@
 __author__ = 'max'
 import csv  #imports the csv module
+import os #import os #imports the os module
 from collections import defaultdict #special dict that returns default values whenever a key is selected from the dict
 
 # open csv file
@@ -13,7 +14,7 @@ by_imageid = defaultdict(list) #create dict based upon photo id from photos tag 
 temp_list = [] #tempoary list
 tag_list =[] #to store list of tags
 matrix_tuple = []  #blank matrix list with tuple
-matrix_dic =  defaultdict(int) #blank matrix dictionary to add values
+matrix_dic = defaultdict(int) #blank matrix dictionary to add values
 
 def start():#calls all the other function in the program
     read_CSV()
@@ -52,13 +53,12 @@ def tag_relationships():
     #displays all tag words/number that a photo is tagged based on photo id
     for image, tag in sorted(temp_list):#converts list into a dictionary to include image with their own tags
         by_imageid[image].append(tag)
-
+'''
     #update matrix table with co-occurrence  for each individual keywords
     for i in sorted(tag_list):
         for j in sorted(tag_list):
             for id in by_imageid:
                 if j == i:
-                    matrix_dic[(i),(j)] = 0
                     break
                 elif j in by_imageid[id] and i in by_imageid[id]:
                     count=matrix_dic[(i),(j)]
@@ -69,24 +69,19 @@ def tag_relationships():
     temp_list.clear()
 '''
     #print matrix table with each key for the coordinates
-    for k,v in sorted(matrix_dic.items()):
-        print("keys:",k,"values:",v)
-
-
-def writedicttoCSV(csv_file,csv_columns,dict_data):
-    try:
-        with open(csv_file, 'w') as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
-            writer.writeheader()
-            for data in dict_data:
-                writer.writerow(data)
-    except IOError as (errno, strerror):
-            print("I/O error({0}): {1}".format(errno, strerror))
-    return
-'''
+#    for k,v in sorted(matrix_dic.items()):
+#        print("keys:",k,"values:",v)
 
 def prep_data_csv():
-    csv_col = tag_list.sort()
-    print(csv_col)
+    csv_col = []#declare column for matrix
+    tag_list.sort()#sort the tag list
+    csv_col.extend(tag_list)#extend the tag list into column in a table
+
+    #gets current path for writing to csv
+    currentPath = os.getcwd()
+    csv_file = currentPath + "/Matrix.csv"
+
+
 
 start() #start of the python program
+prep_data_csv()

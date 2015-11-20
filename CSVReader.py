@@ -68,6 +68,7 @@ def tag_relationships():
                     count = 0
     temp_list.clear()
 '''
+
     #print matrix table with each key for the coordinates
 #    for k,v in sorted(matrix_dic.items()):
 #        print("keys:",k,"values:",v)

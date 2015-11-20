@@ -24,7 +24,7 @@ def gen_matrix_csv():#generates the format for a blank matrix
     header.insert(0,'rows & col')
 
     #write file to csv
-    with open('output.csv', 'w', newline='') as f:
+    with open(csv_file, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(header)
 

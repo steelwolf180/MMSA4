@@ -11,11 +11,10 @@ header = []#declare header for matrix
 #file location
 currentPath = os.getcwd()
 csv_file = currentPath + "/Matrix.csv"
-csv_col = []#declare column for matrix
-csv_row = []#declare row for matrix
 
 def gen_matrix_csv():#generates the format for a blank matrix
-
+    csv_col = []#declare column for matrix
+    csv_row = []#declare row for matrix
     #gets current path for writing to csv
     csv_col.extend(sorted(tag_list))
     csv_row.extend(sorted(tag_list))

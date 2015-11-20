@@ -1,26 +1,35 @@
 import csv  #imports the csv module
+import os #import os module
 from collections import defaultdict
 
+#declartion
 p_csv = defaultdict(int)
-csv_col = []#declare column for matrix
 tag_list = ['a','d','c','b']
+p_csv = {('a','a'):23, ('b','c'):32, ('d','b'):25, ('a','c'):42}
+header = []#declare header for matrix
 
-for i in sorted(tag_list):
-    for j in sorted(tag_list):
-        p_csv[(i),(j)]
+#file location
+currentPath = os.getcwd()
+csv_file = currentPath + "/Matrix.csv"
+csv_col = []#declare column for matrix
+csv_row = []#declare row for matrix
 
-csv_list = {('a','a'):23, ('b','c'):32, ('d','b'):25, ('a','c'):42}
+def gen_matrix_csv():#generates the format for a blank matrix
 
-#gets current path for writing to csv
-csv_col.extend(sorted(tag_list))
-#currentPath = os.getcwd()
-#csv_file = currentPath + "/Matrix.csv"
+    #gets current path for writing to csv
+    csv_col.extend(sorted(tag_list))
+    csv_row.extend(sorted(tag_list))
 
-with open('names.csv', 'w') as csvfile:
-    fieldnames = csv_col
-    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+    #prep the header before writing to csv
+    header = sorted(tag_list)
+    header.insert(0,'rows & col')
 
-    writer.writeheader()
-    for i in csv_col:
-        for j in csv_col:
-            writer.writerow(csv_list[(i),(j)])
+    #write file to csv
+    with open('output.csv', 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(header)
+
+        for i in sorted(tag_list):
+            writer.writerow((i))
+
+gen_matrix_csv()

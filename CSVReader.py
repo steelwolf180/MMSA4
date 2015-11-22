@@ -1,12 +1,20 @@
-__author__ = 'max'
+__author__ = 'Ong Zong Bao'
+#Done By: Ong Zong Bao
+#Student ID: 2167843O
+
 import csv  #imports the csv module
 import os #import os #imports the os module
+from collections import Counter #imports to process dictionary for top 5 tags in a word
 from collections import defaultdict #special dict that returns default values whenever a key is selected from the dict
 
 # open csv file
 tags = open('tags.csv', "rt", encoding="utf-8")
 #photos = open('photos.csv', "rt", encoding="latin-1")
 photos_tag = open('photos_tags.csv', "rt", encoding="utf-8")
+
+#file location to write
+currentPath = os.getcwd()
+csv_file = currentPath + "/Matrix.csv"
 
 #declareation
 by_words = defaultdict(list) #create dict based upon tag word from photos tag table
@@ -53,7 +61,7 @@ def tag_relationships():
     #displays all tag words/number that a photo is tagged based on photo id
     for image, tag in sorted(temp_list):#converts list into a dictionary to include image with their own tags
         by_imageid[image].append(tag)
-'''
+
     #update matrix table with co-occurrence  for each individual keywords
     for i in sorted(tag_list):
         for j in sorted(tag_list):
@@ -67,7 +75,26 @@ def tag_relationships():
                 else:
                     count = 0
     temp_list.clear()
-'''
+
+def gen_matrix_csv():#generates the format for a blank matrix
+    csv_col = []#declare column for matrix
+    csv_row = []#declare row for matrix
+    #gets current path for writing to csv
+    csv_col.extend(sorted(tag_list))
+    csv_row.extend(sorted(tag_list))
+    header = []#declare header for matrix
+    row_lst = []#decalre blank row
+    #prep the header before writing to csv
+    header = sorted(tag_list)
+    header.insert(0,'rows & col')
+
+    #write file to csv
+    with open(csv_file, 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(header)
+        for i in sorted(tag_list):
+            writer.writerow((i))
+
 
     #print matrix table with each key for the coordinates
 #    for k,v in sorted(matrix_dic.items()):
@@ -75,14 +102,74 @@ def tag_relationships():
 
 def prep_data_csv():
     csv_col = []#declare column for matrix
-    tag_list.sort()#sort the tag list
-    csv_col.extend(tag_list)#extend the tag list into column in a table
+    csv_row = []#declare row for matrix
 
     #gets current path for writing to csv
-    currentPath = os.getcwd()
-    csv_file = currentPath + "/Matrix.csv"
+    csv_col.extend(sorted(tag_list))
+    csv_row.extend(sorted(tag_list))
+    header = []#declare header for matrix
 
+    #prep the header before writing to csv
+    header = ['X tag','Y Tag', 'Relationship Between X and Y']
 
+    #write file to csv
+    with open(csv_file, 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(header)
+        for k1,k2 in sorted(matrix_dic.keys()):
+            writer.writerow((k1,k2,matrix_dic[(k1),(k2)]))
+
+def get_popular_tag():
+    compare_tag = ['water','people','london']
+    water_tag = []
+    people_tag = []
+    london_tag = []
+
+    for k1,k2 in sorted(matrix_dic.keys()):
+        for i in sorted(compare_tag):
+            if i in k1:
+                if k1 not in k2:
+                    if compare_tag[0] in k1:
+                        water_tag.append(k2,matrix_dic[(k1),(k2)])
+
+def get_popular_tag():
+    #declartion of dictionary
+    compare_tag = {}
+    water_tag = {}
+    people_tag = {}
+    london_tag = {}
+
+    #adds related word to water, people and london dictionary to do processing
+    for k1,k2 in sorted(matrix_dic.keys()):
+        if k1 not in k2:
+            if k1 == 'water':
+                water_tag[k2] = matrix_dic[(k1),(k2)]
+            if k1 == 'people':
+                people_tag[k2] = matrix_dic[(k1),(k2)]
+            if k1 == 'london':
+                london_tag[k2]= matrix_dic[(k1),(k2)]
+
+    #processs the dictionary to get the top 5 highest frequency words for Water tag
+    compare_tag = dict(Counter(water_tag).most_common(5))
+    water_tag.clear()
+    water_tag.update(compare_tag)
+    compare_tag.clear()
+    print("Recommend tag for Water the top 5 tags::",water_tag)
+
+    #processs the dictionary to get the top 5 highest frequency words for Later tag
+    compare_tag = dict(Counter(london_tag).most_common(5))
+    london_tag.clear()
+    london_tag.update(compare_tag)
+    compare_tag.clear()
+    print("Recommend tag for London the top 5 tags:",london_tag)
+
+    #processs the dictionary to get the top 5 highest frequency words for People tag
+    compare_tag = dict(Counter(people_tag).most_common(5))
+    people_tag.clear()
+    people_tag.update(compare_tag)
+    compare_tag.clear()
+    print("Recommend tag for People the top 5 tags::",people_tag)
 
 start() #start of the python program
 prep_data_csv()
+get_popular_tag()

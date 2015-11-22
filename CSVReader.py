@@ -23,7 +23,6 @@ by_imageid = defaultdict(list) #create dict based upon photo id from photos tag 
 temp_list = [] #tempoary list
 tag_numlst = {} #contrains number of image that's tagged by the word
 tag_list =[] #to store list of tags
-matrix_tuple = []  #blank matrix list with tuple
 matrix_dic = defaultdict(int) #blank matrix dictionary to add values
 
 
@@ -44,11 +43,8 @@ def read_CSV():
         for val in reader:
             tag_numlst[val[0]] = val[1]
             tag_list.append(val[0])
+
 def gen_matrix():
-    #create matrix with tags
-    for x in sorted(tag_list):
-        for y in sorted(tag_list):
-            matrix_tuple.append((x,y))
 
     #generate blank matrix table
     for i in sorted(tag_list):
@@ -98,11 +94,6 @@ def gen_matrix_csv():#generates the format for a blank matrix
         for i in sorted(tag_list):
             writer.writerow((i))
 
-
-    #print matrix table with each key for the coordinates
-#    for k,v in sorted(matrix_dic.items()):
-#        print("keys:",k,"values:",v)
-
 def prep_data_csv():
     csv_col = []#declare column for matrix
     csv_row = []#declare row for matrix
@@ -144,7 +135,7 @@ def get_popular_tag():
     water_tag.clear()
     water_tag.update(compare_tag)
     compare_tag.clear()
-    print("Recommend tag for Water the top 5 tags::",water_tag)
+    print("Recommend tag for Water the top 5 tags:",water_tag)
 
     #processs the dictionary to get the top 5 highest frequency words for London tag
     compare_tag = dict(Counter(london_tag).most_common(5))
@@ -166,24 +157,34 @@ def get_popular_tag_by_score():
     water_tag = {}
     people_tag = {}
     london_tag = {}
-    tag_collection = 0
+    sky_tag = {}
     tag_freq = 0
+    tag_collection = 100000
 
     #adds related word to water, people and london dictionary to do processing
     for k1,k2 in sorted(matrix_dic.keys()):
         if k1 not in k2:
+            '''
             if k1 == 'water':
-                tag_collection = tag_numlst['water']
-                tag_freq = matrix_dic[(k1),(k2)]
-                water_tag[k2] = math.log(tag_collection/tag_freq)
+                tag_collection = tag_numlst[k1]
+                tag_freq = int(matrix_dic[(k1),(k2)])
+                if tag_freq != 0:
+                    water_tag[k2] = int(10000) * (math.log(tag_collection/(1+tag_freq)))
             if k1 == 'people':
-                tag_collection = tag_numlst['water']
-                tag_freq = matrix_dic[(k1),(k2)]
-                people_tag[k2] = math.log(tag_collection/tag_freq)
+                tag_collection = tag_numlst[k1]
+                tag_freq = int(matrix_dic[(k1),(k2)])
+                if tag_freq != 0:
+                    people_tag[k2] = int(10000) * (math.log(tag_collection/(1+tag_freq)))
             if k1 == 'london':
-                tag_collection = tag_numlst['water']
-                tag_freq = matrix_dic[(k1),(k2)]
-                london_tag[k2] = math.log(tag_collection/tag_freq)
+                tag_collection = tag_numlst[k1]
+                tag_freq = int(matrix_dic[(k1),(k2)])
+                if tag_freq != 0:
+                    london_tag[k2] = int(10000) * (math.log(tag_collection/(1+tag_freq)))'''
+            if k1 == 'sky':
+                tag_collection = int(tag_numlst[k1])
+                tag_freq = int(matrix_dic[(k1),(k2)])
+                if tag_freq != 0:
+                    sky_tag[k2] =tag_freq * math.log(10000/tag_freq)
 
     #processs the dictionary to get the top 5 highest frequency words for Water tag
     compare_tag = dict(Counter(water_tag).most_common(5))
@@ -205,6 +206,13 @@ def get_popular_tag_by_score():
     people_tag.update(compare_tag)
     compare_tag.clear()
     print("Score Recommend tag for People the top 5 tags::",people_tag)
+
+    #processs the dictionary to get the top 5 highest frequency words for People tag
+    compare_tag = dict(Counter(sky_tag).most_common(5))
+    sky_tag.clear()
+    sky_tag.update(compare_tag)
+    compare_tag.clear()
+    print("Score Recommend tag for Sky the top 5 tags::",sky_tag)
 
 start() #start of the python program
 prep_data_csv() #prep data and write co-occurrence to csv
